@@ -6,9 +6,13 @@ from rest_framework import filters, serializers, status, viewsets
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 
-from .models import Employee, Post, Stagiaires
-from .serializer import EmployeSerializer, PostSerializer, StagiairesSerializer
+from .models import Employee, Post, Stagiaires,Supplier
+from .serializer import EmployeSerializer, PostSerializer, StagiairesSerializer,SupplierSerializer
 
+
+class SupplierViewSet(viewsets.ModelViewSet):
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
 
 class StagiairesViewSet(viewsets.ModelViewSet):
     queryset = Stagiaires.objects.all().order_by('-id')  
