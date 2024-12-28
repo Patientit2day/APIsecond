@@ -6,10 +6,12 @@ from rest_framework import filters, serializers, status, viewsets
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 
-from .models import Employee, Post, Stagiaires,Supplier
-from .serializer import EmployeSerializer, PostSerializer, StagiairesSerializer,SupplierSerializer
+from .models import Employee, Post, Stagiaires,Supplier,Professor
+from .serializer import EmployeSerializer, PostSerializer, StagiairesSerializer,SupplierSerializer,ProfessorSerializer
 
-
+class ProfessorViewSet(viewsets.ModelViewSet):
+    queryset = Professor.objects.all()
+    serializer_class = ProfessorSerializer
 class SupplierViewSet(viewsets.ModelViewSet):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Employee, Post, Stagiaires
+from .models import Employee, Post, Stagiaires,Professor
 
 # Register your models here.
 
@@ -20,4 +20,9 @@ class Employee(admin.ModelAdmin):
     list_display=('id','name','surname','email','adress','telephone','typecontrat','gender','contrat','hiring_date','photo','salary','post')
 
 
+@admin.register(Professor)
+class ProfessorAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'email', 'subject', 'phone')
+    search_fields = ('first_name', 'last_name', 'email', 'subject')
+    ordering = ('last_name',)
 

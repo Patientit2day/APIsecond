@@ -1,8 +1,11 @@
 from rest_framework import serializers
 
-from .models import Employee, Post, Stagiaires,Supplier
+from .models import Employee, Post, Stagiaires,Supplier,Professor
 
-
+class ProfessorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professor
+        fields = '__all__'
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
