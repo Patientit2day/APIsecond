@@ -2,9 +2,7 @@ from django.db import models
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
-# Create your models here.
 
-# Create your models here.
 class Stagiaires(models.Model):
    
     nom=models.CharField(max_length=45,blank=False,null=False)
