@@ -89,13 +89,22 @@ from pathlib import Path
 
 from django.conf import settings
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # Utilisez le backend MySQL
+        'NAME': 'Testdb',              # Remplacez par le nom de votre base de données MySQL
+        'USER': 'root',            # Remplacez par votre nom d'utilisateur MySQL
+        'PASSWORD': 'urbainP@tient123!',       # Remplacez par votre mot de passe MySQL
+        'HOST': 'localhost',                     # Laissez 'localhost' si MySQL est sur le même serveur
+        'PORT': '3306',                          # Le port par défaut pour MySQL est 3306
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
