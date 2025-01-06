@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'Api',
+    'silk',
+    'django_elasticsearch_dsl',
    
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -123,10 +127,35 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# settings.py
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'http://localhost:9200',
+    },
+}
+from elasticsearch_dsl import connections
 
+# Créer une connexion
+connections.create_connection(**ELASTICSEARCH_DSL['default'])
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
+
+
+
+from elasticsearch_dsl import connections
+
+# Créer une connexion
+connections.create_connection(**ELASTICSEARCH_DSL['default'])
+
+# Test de la connexion
+try:
+    if connections.get_connection().ping():
+        print("Connexion à Elasticsearch établie avec succès.")
+    else:
+        print("Connexion à Elasticsearch échouée.")
+except Exception as e:
+    print(f"Erreur de connexion : {e}")
 
 LANGUAGE_CODE = 'en-us'
 
@@ -166,3 +195,7 @@ EMAIL_HOST_USER = 'urbainpatient5@gmail.com'
 EMAIL_HOST_PASSWORD = 'nngo chlw shwq jduf'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER 
 ADMIN_EMAIL = 'urbainpatient5@gmail.com'
+
+SILKY_PYTHON_PROFILER = True  # Activer le profiling Python
+SILKY_PANELS = ['silk.panels.sql.SQLPanel', 'silk.panels.cache.CachePanel']  # Panneaux à afficher
+SILKY_META = True  # Activer le suivi des métadonnées des requêtes
