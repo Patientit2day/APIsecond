@@ -6,6 +6,7 @@ from rest_framework import filters, serializers, status, viewsets
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from .documents import EmployeeDocument
+from elasticsearch.exceptions import NotFoundError
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Employee, Post, Stagiaires,Supplier,Professor
 from .serializer import EmployeSerializer, PostSerializer, StagiairesSerializer,SupplierSerializer,ProfessorSerializer
@@ -100,12 +101,14 @@ class EmployeViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         employe_id = self.kwargs['pk']
-        
-        # Récupérer l'employé depuis Elasticsearch
+    
+    # Récupérer l'employé depuis Elasticsearch
         try:
-            employe = EmployeeDocument.get(id=employe_id)
+             employe = EmployeeDocument.get(id=employe_id)
+        except NotFoundError:
+              return Response({'error': 'Employé non trouvé.'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response({'error': 'Employé non trouvé.'}, status=status.HTTP_404_NOT_FOUND)
+             return Response({'error': f'Erreur lors de la récupération de l\'employé : {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         serializer = self.get_serializer(employe)  
         return Response(serializer.data)

@@ -43,9 +43,18 @@ INSTALLED_APPS = [
     'Api',
     'silk',
     'django_elasticsearch_dsl',
+    'channels',
    
 ]
-
+ASGI_APPLICATION = "FluxyApi.asgi.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,19 +143,12 @@ ELASTICSEARCH_DSL = {
         'hosts': 'http://localhost:9200',
     },
 }
+from elasticsearch import Elasticsearch
 from elasticsearch_dsl import connections
+from django.conf import settings
 
-# Créer une connexion
-connections.create_connection(**ELASTICSEARCH_DSL['default'])
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
-
-
-from elasticsearch_dsl import connections
-
-# Créer une connexion
-connections.create_connection(**ELASTICSEARCH_DSL['default'])
+# Créer une connexion Elasticsearch en utilisant la configuration
+connections.create_connection(**settings.ELASTICSEARCH_DSL['default'])
 
 # Test de la connexion
 try:
@@ -157,13 +159,10 @@ try:
 except Exception as e:
     print(f"Erreur de connexion : {e}")
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
+# LANGUAGE_CODE = 'en-us'
+# TIME_ZONE = 'UTC'
+# USE_I18N = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
