@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Api',
     'silk',
     'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
     'channels',
    
 ]
