@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Employee, Post, Stagiaires,Supplier,Professor
+from .models import Employee, Post, Stagiaires,Supplier,Professor,Payment
 
 class ProfessorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,3 +51,11 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields =['id','post_name']  # Incluez tous les champs que vous souhaitez exposer
+
+
+
+
+class PaymentSerializer(serializers.Serializer):
+    product_name = serializers.CharField(max_length=255)
+    amount = serializers.IntegerField()  # En cents
+    currency = serializers.CharField(max_length=3)

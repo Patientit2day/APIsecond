@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
     'channels',
+    'django_extensions',
    
 ]
 ASGI_APPLICATION = "FluxyApi.asgi.application"
@@ -119,7 +120,8 @@ DATABASES = {
         'PORT': '3306',                          # Le port par défaut pour MySQL est 3306
     }
 }
-
+STRIPE_TEST_SECRET_KEY = os.getenv('STRIPE_TEST_SECRET_KEY')
+STRIPE_TEST_PUBLIC_KEY = os.getenv('STRIPE_TEST_PUBLIC_KEY')
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 

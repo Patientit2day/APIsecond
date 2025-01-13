@@ -6,10 +6,12 @@ from rest_framework import filters, serializers, status, viewsets
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from .documents import EmployeeDocument
+from rest_framework.decorators import action
+import stripe
 from elasticsearch.exceptions import NotFoundError
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Employee, Post, Stagiaires,Supplier,Professor
-from .serializer import EmployeSerializer, PostSerializer, StagiairesSerializer,SupplierSerializer,ProfessorSerializer
+from .models import Employee, Post, Stagiaires,Supplier,Professor,Payment
+from .serializer import EmployeSerializer, PostSerializer, PaymentSerializer,StagiairesSerializer,SupplierSerializer,ProfessorSerializer
 
 class ProfessorViewSet(viewsets.ModelViewSet):
     queryset = Professor.objects.all()
@@ -167,4 +169,65 @@ class PostViewSet(viewsets.ModelViewSet):
                 'post': serializer.data
             }, status=status.HTTP_201_CREATED) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    
+stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
+class PaymentViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['post'])
+    def create_checkout_session(self, request):
+        YOUR_DOMAIN = "http://localhost:8000"
+        
+        serializer = PaymentSerializer(data=request.data)
+        if serializer.is_valid():
+            product_name = serializer.validated_data['product_name']
+            product_amount = serializer.validated_data['amount']
+            product_currency = serializer.validated_data['currency']
+
+            try:
+                checkout_session = stripe.checkout.Session.create(
+                    payment_method_types=['card'],
+                    line_items=[
+                        {
+                            'price_data': {
+                                'currency': product_currency,
+                                'product_data': {
+                                    'name': product_name,
+                                },
+                                'unit_amount': product_amount,
+                            },
+                            'quantity': 1,
+                        },
+                    ],
+                    mode='payment',
+                    success_url=YOUR_DOMAIN + '/success/',
+                    cancel_url=YOUR_DOMAIN + '/cancel/',
+                )
+                
+                payment = Payment.objects.create(
+                    product_name=product_name,
+                    amount=product_amount,
+                    currency=product_currency,
+                    stripe_session_id=checkout_session.id
+                )
+
+                return Response({'id': checkout_session.id}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['get'])
+    def check_payment_status(self, request):
+        session_id = request.query_params.get('session_id', None)
+        if not session_id:
+            return Response({'error': 'Session ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            session = stripe.checkout.Session.retrieve(session_id)
+            if session['payment_status'] == 'paid':
+                return Response({'status': 'paid'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'status': session['payment_status']}, status=status.HTTP_200_OK)
+        
+        except stripe.error.InvalidRequestError:
+            return Response({'error': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)

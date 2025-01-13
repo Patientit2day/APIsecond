@@ -65,7 +65,15 @@ class Professor(models.Model):
 
 
 
+class Payment(models.Model):
+    product_name = models.CharField(max_length=255)
+    amount = models.IntegerField()  # Montant en cents
+    currency = models.CharField(max_length=3)
+    stripe_session_id = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.product_name} - {self.amount} {self.currency}"
     
     
 
