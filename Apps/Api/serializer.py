@@ -47,7 +47,7 @@ class EmployeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Cet email est déjà utilisé.")
         return value
 class PostSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Post
         fields =['id','post_name']  # Incluez tous les champs que vous souhaitez exposer

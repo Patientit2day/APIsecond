@@ -4,26 +4,26 @@ from rest_framework.exceptions import ValidationError
 
 
 class Stagiaires(models.Model):
-   
+
     nom=models.CharField(max_length=45,blank=False,null=False)
     prenom=models.CharField(max_length=45,blank=False,null=False)
     email=models.EmailField()
     telephone=models.CharField(max_length=12,null=False,blank=False)
     def __str__(self):
         return self.nom
-    
-    
+
+
 class Post(models.Model):
-   
+
     post_name=models.CharField(max_length=120,null=False,blank=False)
-    def __str__(self):   
+    def __str__(self):
        return self.post_name
 
 
 
 
 class Employee(models.Model):
-   
+
     name=models.CharField(max_length=45,blank=False,null=False)
     surname=models.CharField(max_length=45,blank=False,null=False)
     email=models.EmailField()
@@ -40,8 +40,8 @@ class Employee(models.Model):
 
     contrat=models.FileField(upload_to='pdf_contrats/')
     hiring_date=models.DateTimeField(default=timezone.now)
-    photo = models.ImageField(upload_to='pdf_contrats/', null=True, blank=True) 
-   
+    photo = models.ImageField(upload_to='pdf_contrats/', null=True, blank=True)
+
     def __str__(self):
         return self.name
 class Supplier(models.Model):
@@ -74,8 +74,8 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.product_name} - {self.amount} {self.currency}"
-    
-    
+
+
 
 
 

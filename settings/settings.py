@@ -20,7 +20,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1i19#-hdjmo+xwogmrujduzt-akm^a1fhx%g*j^m8mh=d_$8i1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,23 +39,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
-    'Api',
+    'Apps.Api',
     'silk',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
     'channels',
     'django_extensions',
-   
+
 ]
 ASGI_APPLICATION = "FluxyApi.asgi.application"
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
-}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -110,18 +102,6 @@ from django.conf import settings
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Utilisez le backend MySQL
-        'NAME': 'Testdb',              # Remplacez par le nom de votre base de données MySQL
-        'USER': 'root',            # Remplacez par votre nom d'utilisateur MySQL
-        'PASSWORD': 'urbainP@tient123!',       # Remplacez par votre mot de passe MySQL
-        'HOST': 'localhost',                     # Laissez 'localhost' si MySQL est sur le même serveur
-        'PORT': '3306',                          # Le port par défaut pour MySQL est 3306
-    }
-}
-STRIPE_TEST_SECRET_KEY = os.getenv('STRIPE_TEST_SECRET_KEY')
-STRIPE_TEST_PUBLIC_KEY = os.getenv('STRIPE_TEST_PUBLIC_KEY')
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -188,16 +168,13 @@ DEBUG = True  # Changez cela à True pour le développement
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Ajoutez d'autres hôtes si nécessaire
 
 
-#Email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'urbainpatient5@gmail.com'
-EMAIL_HOST_PASSWORD = 'nngo chlw shwq jduf'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER 
-ADMIN_EMAIL = 'urbainpatient5@gmail.com'
 
 SILKY_PYTHON_PROFILER = True  # Activer le profiling Python
 SILKY_PANELS = ['silk.panels.sql.SQLPanel', 'silk.panels.cache.CachePanel']  # Panneaux à afficher
 SILKY_META = True  # Activer le suivi des métadonnées des requêtes
+
+
+try:
+    from .local_settings import *
+except ImportError :
+    pass

@@ -21,39 +21,39 @@ class SupplierViewSet(viewsets.ModelViewSet):
     serializer_class = SupplierSerializer
 
 class StagiairesViewSet(viewsets.ModelViewSet):
-    queryset = Stagiaires.objects.all().order_by('-id')  
-    serializer_class = StagiairesSerializer  
+    queryset = Stagiaires.objects.all().order_by('-id')
+    serializer_class = StagiairesSerializer
 
     def list(self, request):
         # Récupérer tous les stagiaires
-        serializer = self.get_serializer(self.queryset, many=True) 
-        return Response(serializer.data, status=status.HTTP_200_OK)  
+        serializer = self.get_serializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
         # Créer un nouveau stagiaire
-        serializer = self.get_serializer(data=request.data)  
-        if serializer.is_valid(): 
-            serializer.save() 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)  
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 #employe
 
 
 # class EmployeFilter(django_filters.FilterSet):
-#     name = django_filters.CharFilter(lookup_expr='icontains') 
-#     email = django_filters.CharFilter(lookup_expr='icontains') 
+#     name = django_filters.CharFilter(lookup_expr='icontains')
+#     email = django_filters.CharFilter(lookup_expr='icontains')
 
 #     class Meta:
 #         model = Employee
-#         fields = ['name', 'email']  
+#         fields = ['name', 'email']
 
 class EmployeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all().order_by('-id')
     serializer_class = EmployeSerializer
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
-    filterset_fields = ['name', 'email'] 
-    ordering_fields = '__all__'  
-    ordering = ['id']  
+    filterset_fields = ['name', 'email']
+    ordering_fields = '__all__'
+    ordering = ['id']
 
     def list(self, request, *args, **kwargs):
         search_term = request.query_params.get('q', None)
@@ -103,7 +103,7 @@ class EmployeViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         employe_id = self.kwargs['pk']
-    
+
     # Récupérer l'employé depuis Elasticsearch
         try:
              employe = EmployeeDocument.get(id=employe_id)
@@ -112,7 +112,7 @@ class EmployeViewSet(viewsets.ModelViewSet):
         except Exception as e:
              return Response({'error': f'Erreur lors de la récupération de l\'employé : {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        serializer = self.get_serializer(employe)  
+        serializer = self.get_serializer(employe)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
@@ -151,32 +151,32 @@ class EmployeViewSet(viewsets.ModelViewSet):
 
 #post employee
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-id')  
-    serializer_class = PostSerializer  
+    queryset = Post.objects.all().order_by('-id')
+    serializer_class = PostSerializer
 
     def list(self, request):
         # Récupérer tous les posts
-        serializer = self.get_serializer(self.queryset, many=True)  
-        return Response(serializer.data, status=status.HTTP_200_OK)  
+        serializer = self.get_serializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
         # Créer un nouveau post
-        serializer = self.get_serializer(data=request.data)  
-        if serializer.is_valid(): 
-            post = serializer.save()  
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            post = serializer.save()
             return Response({
                 'message': 'Post registered successfully.',
                 'post': serializer.data
-            }, status=status.HTTP_201_CREATED) 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
-    
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 class PaymentViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def create_checkout_session(self, request):
         YOUR_DOMAIN = "http://localhost:8000"
-        
+
         serializer = PaymentSerializer(data=request.data)
         if serializer.is_valid():
             product_name = serializer.validated_data['product_name']
@@ -202,7 +202,7 @@ class PaymentViewSet(viewsets.ViewSet):
                     success_url=YOUR_DOMAIN + '/success/',
                     cancel_url=YOUR_DOMAIN + '/cancel/',
                 )
-                
+
                 payment = Payment.objects.create(
                     product_name=product_name,
                     amount=product_amount,
@@ -228,6 +228,6 @@ class PaymentViewSet(viewsets.ViewSet):
                 return Response({'status': 'paid'}, status=status.HTTP_200_OK)
             else:
                 return Response({'status': session['payment_status']}, status=status.HTTP_200_OK)
-        
+
         except stripe.error.InvalidRequestError:
             return Response({'error': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)

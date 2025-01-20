@@ -45,9 +45,9 @@ class SupplierModelTest(TestCase):
     def test_supplier_deletion(self):
         # Vérifier que le fournisseur existe avant la suppression
         self.assertTrue(Supplier.objects.filter(id=self.supplier.id).exists())
-        
+
         # Supprimer le fournisseur
         self.supplier.delete()
-        
+
         # Vérifier que le fournisseur n'existe plus après la suppression
         self.assertFalse(Supplier.objects.filter(id=self.supplier.id).exists())

@@ -10,10 +10,10 @@ class Stagiaires(admin.ModelAdmin):
 
 
 
-        
+
 @admin.register(Post)
 class Post(admin.ModelAdmin):
-    list_display=('id','post_name')  
+    list_display=('id','post_name')
 
 @admin.register(Employee)
 class Employee(admin.ModelAdmin):
