@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Employee, Post, Stagiaires,Professor
+from .models import Employee, Post, Stagiaires,Professor,CustomUser
 
 # Register your models here.
 
@@ -8,12 +8,14 @@ from .models import Employee, Post, Stagiaires,Professor
 class Stagiaires(admin.ModelAdmin):
     list_display=('id','nom','prenom','email','telephone')
 
-
-
-
 @admin.register(Post)
 class Post(admin.ModelAdmin):
     list_display=('id','post_name')
+
+
+@admin.register(CustomUser)
+class CustomUser(admin.ModelAdmin):
+   pass
 
 @admin.register(Employee)
 class Employee(admin.ModelAdmin):

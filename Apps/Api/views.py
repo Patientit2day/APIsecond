@@ -12,8 +12,27 @@ from elasticsearch.exceptions import NotFoundError
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Employee, Post, Stagiaires,Supplier,Professor,Payment
 from .serializer import EmployeSerializer, PostSerializer, PaymentSerializer,StagiairesSerializer,SupplierSerializer,ProfessorSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
+from .models import CustomUser  # Assurez-vous d'importer votre modèle utilisateur
+from .serializer import CustomUserSerializer
 
+class CustomUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    def perform_create(self, serializer):
+        # Vous pouvez ajouter des logiques supplémentaires ici si nécessaire
+        serializer.save()
+class ProtectedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"message": "Vous êtes authentifié!"})
 class ProfessorViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
 class SupplierViewSet(viewsets.ModelViewSet):

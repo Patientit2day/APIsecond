@@ -1,7 +1,33 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 from rest_framework.exceptions import ValidationError
+from django.utils.text import slugify
 
+class CustomUser(AbstractUser):
+    photo=models.ImageField(blank=True,null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            unique_slug = slugify(self.username)
+            counter = 1
+            while CustomUser.objects.filter(slug=unique_slug).exists():
+                unique_slug = f'{unique_slug}-{counter}'
+                counter += 1
+            self.slug = unique_slug
+
+        # Hash the password if it's not already hashed
+        if self.pk:  # User exists
+            original_password = CustomUser.objects.get(pk=self.pk).password
+            if self.password != original_password:  # Password has changed
+                self.set_password(self.password)
+        else:  # New user
+            if self.password:  # Ensure password is provided
+                self.set_password(self.password)
+
+        # Call the parent class's save method
+        super().save(*args, **kwargs)
 
 class Stagiaires(models.Model):
 

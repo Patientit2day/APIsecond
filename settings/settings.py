@@ -61,6 +61,13 @@ MIDDLEWARE = [
     'silk.middleware.SilkyMiddleware',
 ]
 
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
@@ -96,12 +103,12 @@ from pathlib import Path
 
 from django.conf import settings
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -130,17 +137,17 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import connections
 from django.conf import settings
 
-# Créer une connexion Elasticsearch en utilisant la configuration
-connections.create_connection(**settings.ELASTICSEARCH_DSL['default'])
+# # Créer une connexion Elasticsearch en utilisant la configuration
+# connections.create_connection(**settings.ELASTICSEARCH_DSL['default'])
 
-# Test de la connexion
-try:
-    if connections.get_connection().ping():
-        print("Connexion à Elasticsearch établie avec succès.")
-    else:
-        print("Connexion à Elasticsearch échouée.")
-except Exception as e:
-    print(f"Erreur de connexion : {e}")
+# # Test de la connexion
+# try:
+#     if connections.get_connection().ping():
+#         print("Connexion à Elasticsearch établie avec succès.")
+#     else:
+#         print("Connexion à Elasticsearch échouée.")
+# except Exception as e:
+#     print(f"Erreur de connexion : {e}")
 
 # LANGUAGE_CODE = 'en-us'
 # TIME_ZONE = 'UTC'
@@ -173,7 +180,7 @@ SILKY_PYTHON_PROFILER = True  # Activer le profiling Python
 SILKY_PANELS = ['silk.panels.sql.SQLPanel', 'silk.panels.cache.CachePanel']  # Panneaux à afficher
 SILKY_META = True  # Activer le suivi des métadonnées des requêtes
 
-
+AUTH_USER_MODEL ='Api.CustomUser' 
 try:
     from .local_settings import *
 except ImportError :

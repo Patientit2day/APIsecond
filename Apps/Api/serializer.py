@@ -1,6 +1,19 @@
 from rest_framework import serializers
 
-from .models import Employee, Post, Stagiaires,Supplier,Professor,Payment
+from .models import Employee, Post, Stagiaires,Supplier,Professor,Payment,CustomUser
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'photo']
+
+from django.contrib.auth import get_user_model
+
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'photo']
 
 class ProfessorSerializer(serializers.ModelSerializer):
     class Meta:
